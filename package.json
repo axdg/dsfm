@@ -1,0 +1,19 @@
+{
+  "name": "matter",
+  "version": "0.0.1",
+  "description": "Front matter extractor",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "axdg <axdg@dfant.asia>",
+  "license": "MIT",
+  "devDependencies": {
+    "benchmark": "^1.0.0",
+    "front-matter": "^1.0.0",
+    "glob": "^5.0.14",
+    "gray-matter": "^2.0.1",
+    "js-yaml": "^3.3.1"
+  },
+  "dependencies": {}
+}
