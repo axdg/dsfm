@@ -1,7 +1,8 @@
 {
-  "name": "matter",
+  "name": "dark-matter",
   "version": "0.0.1",
-  "description": "Front matter extractor",
+  "repository": "https://github.com/axdg/dark-matter.git"
+  "description": "Post front-matter and body extractor / parser",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +12,6 @@
   "devDependencies": {
     "benchmark": "^1.0.0",
     "front-matter": "^1.0.0",
-    "glob": "^5.0.14",
     "gray-matter": "^2.0.1",
     "js-yaml": "^3.3.1"
   },
