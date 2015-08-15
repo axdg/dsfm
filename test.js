@@ -18,6 +18,12 @@ fixt.complete = {
   content: 'content'
 };
 
+// a sample containing no front matter and no content
+fixt.empty = {
+  data: null,
+  content: ''
+}
+
 // a sample containing no front matter
 fixt.noFrontMatter = {
   data: null,
@@ -29,40 +35,67 @@ fixt.noContent = {
   data: {
     test: 'test'
   },
-  content: null
+  content: ''
+}
+
+// a sample containing no second delim
+fixt.noSecondDelim = {
+  data: null,
+  content: '---\ncontent'
+}
+
+// a sample containing no first delim
+fixt.noFirstDelim = {
+  data: null,
+  content: 'content\n---\n'
 }
 
 describe('fm', function() {
 
   describe('#test', function() {
     it('should detect front matter in a string', function() {
-      assert.equal(true, fm.test('---\ntest: test\n---\r\ncontent'));
+      assert.equal(true, fm.test('---\ntest: test\n---\ncontent'));
     });
     it('should detect front matter in a string beginning with a BOM', function() {
-      assert.equal(true, fm.test('\uFEFF---\ntest: test\n---\r\ncontent'));
+      assert.equal(true, fm.test('\uFEFF---\ntest: test\n---\ncontent'));
     });
   });
 
   describe('#parse', function() {
     it('should parse a string containing front matter', function() {
-      assert.deepEqual(fixt.complete, fm.parse('---\ntest: test\n---\r\ncontent'));
+      assert.deepEqual(fixt.complete, fm.parse('---\ntest: test\n---\ncontent'));
     });
     it('should parse front matter from a string beginning with a BOM', function() {
-      assert.deepEqual(fixt.complete, fm.parse('\uFEFF---\ntest: test\n---\r\ncontent'));
+      assert.deepEqual(fixt.complete, fm.parse('\uFEFF---\ntest: test\n---\ncontent'));
     });
-
-    // TODO: write these tests
-    it('should correctly parse an empty string');
-    it('should correctly parse a string containing no front matter');
-    it('should correctly parse a string containing no content');
-    it('should correctly parse a string containing only a front delim');
-    it('should correctly parse a string containing only a closing delim');
-    it('should correctly parse string using dos newlines')
+    it('should correctly parse an empty string', function() {
+      assert.deepEqual(fixt.empty, fm.parse(''));
+    });
+    it('should correctly parse a string containing no front matter block', function() {
+      assert.deepEqual(fixt.noFrontMatter, fm.parse('content'));
+    });
+    it('should correctly parse a string containing an empty front matter block', function() {
+      assert.deepEqual(fixt.noFrontMatter, fm.parse('---\n\n---\ncontent'));
+    });
+    it('should correctly parse a string containing no content', function() {
+      assert.deepEqual(fixt.noContent, fm.parse('---\ntest: test\n---\n'))
+    });
+    it('should correctly parse a string containing only a front delim', function() {
+      assert.deepEqual(fixt.noSecondDelim, fm.parse('---\ncontent'));
+    });
+    it('should correctly parse a string containing only a closing delim', function() {
+      assert.deepEqual(fixt.noFirstDelim, fm.parse('content\n---\n'));
+    });
+    it('should correctly parse string using dos newlines', function() {
+      assert.deepEqual(fixt.complete, fm.parse('---\r\ntest: test\r\n---\r\ncontent'));
+    });
   });
 });
 
 describe('fm()', function() {
-  it('should correctly alias fm.parse()');
+  it('should alias dm.parse()', function() {
+    assert.deepEqual(fixt.complete, fm.parse('---\ntest: test\n---\ncontent'))
+  });
 });
 
 
