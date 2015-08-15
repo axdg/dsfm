@@ -5,15 +5,24 @@
   "description": "Post front-matter and body extractor / parser",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --require blanket -R mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js"
   },
   "author": "axdg <axdg@dfant.asia>",
   "license": "MIT",
   "devDependencies": {
     "benchmark": "^1.0.0",
+    "blanket": "^1.1.7",
+    "coveralls": "^2.11.4",
     "front-matter": "^1.0.0",
     "gray-matter": "^2.0.1",
-    "js-yaml": "^3.3.1"
+    "js-yaml": "^3.3.1",
+    "mocha-lcov-reporter": "0.0.2"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "config": {
+    "blanket": {
+      "pattern": "index.js",
+      "data-cover-never": [ "node_modules", "test.js" ]
+    }
+  }
 }
