@@ -1,17 +1,27 @@
-var parser = require('js-yaml');
+var yaml = require('js-yaml');
 
-var matter = {};
+// TODO: determine api for custom delims, front matter and body parsers
+// TODO: expand comments
+
+// This module really doesn't need to do anything but extract front matter, or build
+// front matter given either a text file, or object respectively.
+
+
 
 /**
  * parse
  */
-_this = function(string) {
+dm = function(string) {
 
-  string = trimBOM(string) || '';
+  string = trimByteOrderMark(string) || '';
+
+  if (typeof(string) !== 'string') {
+    throw new Error('dark-matter expects a string');
+  }
 
   // default case no front matter empty ouput object
   var o = {
-    data: null,
+    data: {},
     content: string
   }
 
@@ -26,11 +36,15 @@ _this = function(string) {
 
   // find the index of the closing delim or return the default object
   var c = string.search(/\n---\r?\n/);
-  if (c == -1) return o;
+  if (c === -1) return o;
 
   flen = f.length + 1;
   data = string.slice(flen, c);
-  o.data = parser.load(data);
+
+  if (data) {
+    o.data = dataParser.load(data);
+  }
+
   o.content = string.slice(string.indexOf('\n', c + 1)).replace('\n', '');
   return o;
 }
@@ -38,9 +52,9 @@ _this = function(string) {
 /**
  * test
  */
-_this.test = function(string) {
+dm.test = function(string) {
 
-  string = trimBOM(string) || '';
+  string = trimByteOrderMark(string) || '';
 
   var f = /^---\r?\n/.test(string),
       c = /\n---\r?\n/.test(string);
@@ -48,21 +62,16 @@ _this.test = function(string) {
   return f && c;
 }
 
-// al
-_this.parse = function(string) {
-  return _this(string);
+// convinience alias
+dm.parse = function(string) {
+  return this(string);
 }
 
-// convenience method for the export
-function matter(string) {
-   return matter.parse(string)
-}
-
-function trimBOM(string) {
+function trimByteOrderMark(string, char) {
   if (string.charAt(0) === '\uFEFF') {
     string = string.slice(1);
   }
   return string;
 }
 
-module.exports = _this;
+module.exports = dm;

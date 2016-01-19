@@ -15,14 +15,18 @@
     "coveralls": "^2.11.4",
     "front-matter": "^1.0.0",
     "gray-matter": "^2.0.1",
-    "js-yaml": "^3.3.1",
     "mocha-lcov-reporter": "0.0.2"
   },
-  "dependencies": {},
+  "dependencies": {
+    "js-yaml": "^3.3.1"
+  },
   "config": {
     "blanket": {
       "pattern": "index.js",
-      "data-cover-never": [ "node_modules", "test.js" ]
+      "data-cover-never": [
+        "node_modules",
+        "test.js"
+      ]
     }
   }
 }
