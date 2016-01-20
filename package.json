@@ -15,7 +15,8 @@
     "coveralls": "^2.11.4",
     "front-matter": "^1.0.0",
     "gray-matter": "^2.0.1",
-    "mocha-lcov-reporter": "0.0.2"
+    "mocha-lcov-reporter": "0.0.2",
+    "readable-stream": "^2.0.5"
   },
   "dependencies": {
     "js-yaml": "^3.5.2"
