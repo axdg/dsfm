@@ -1,77 +1,95 @@
+/**
+ * module dependancies
+ */
 var yaml = require('js-yaml');
 
-// TODO: determine api for custom delims, front matter and body parsers
-// TODO: expand comments
-
-// This module really doesn't need to do anything but extract front matter, or build
-// front matter given either a text file, or object respectively.
-
-
-
 /**
- * parse
+ *
+ * @param {String|Array} delims
+ * @param {Function} [fn]
  */
-dm = function(string) {
-
-  string = trimByteOrderMark(string) || '';
-
-  if (typeof(string) !== 'string') {
-    throw new Error('dark-matter expects a string');
+function Parser(delims, fn) {
+  if(!this instanceof Parser) {
+    return new Parser(delims, fn)
   }
 
-  // default case no front matter empty ouput object
-  var o = {
-    data: {},
-    content: string
+  fn = fn || noop;
+  if(typeof fn !== 'function') {
+    throw new TypeError('fn must be a function');
   }
 
-  // regex for the first line of the file
-  var f = string.slice(0, string.indexOf('\n')), // splice out the first line
-      p = /^---\r?/; // and validate it
-
-  // no front matter detected, return the file as contents
-  if (!p.test(f)) {
-    return o;
+  var arr = Array.isArray(delims);
+  if(!arr && typeof delims !== 'string') {
+    throw new TypeError('delims must be a string or array');
+  } else if(!arr) {
+    delims = [delims];
+  } else if(!delims.length) {
+    throw new Error('delims cannot be an empty array');
   }
 
-  // find the index of the closing delim or return the default object
-  var c = string.search(/\n---\r?\n/);
-  if (c === -1) return o;
+  var o = new RegExp('^\\uFEFF?' + escape(delims[0]) + '\\r?\\n');
+  var c = new RegExp('\\n' + escape(delims[1] || delims[0]) + '\\r?\\n');
 
-  flen = f.length + 1;
-  data = string.slice(flen, c);
+  /**
+   *
+   * @param {String} str
+   */
+  _this = function(str) {
 
-  if (data) {
-    o.data = dataParser.load(data);
+    var out = {
+      attributes: {},
+      body: str
+    }
+
+    if(!o.test(str)) {
+      return out;
+    }
+
+    var end = str.search(c);
+
+    if(end === -1) {
+      return out;
+    }
+
+    // slice out and parse the front matter
+    out.attributes = fn(str.slice(str.indexOf('\n') + 1, end));
+
+    // slice out the body
+    out.body = str.slice(str.indexOf('\n', end + 1) + 1);
+    return out;
   }
 
-  o.content = string.slice(string.indexOf('\n', c + 1)).replace('\n', '');
-  return o;
+  /**
+   *
+   * @param {String} str
+   */
+  _this.test = function(str) {
+    return o.test(str) && c.test(str);
+  }
+
+  return _this;
 }
 
-/**
- * test
- */
-dm.test = function(string) {
-
-  string = trimByteOrderMark(string) || '';
-
-  var f = /^---\r?\n/.test(string),
-      c = /\n---\r?\n/.test(string);
-
-  return f && c;
+function escape(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-// convinience alias
-dm.parse = function(string) {
-  return this(string);
+function noop(str) {
+  return str;
 }
 
-function trimByteOrderMark(string, char) {
-  if (string.charAt(0) === '\uFEFF') {
-    string = string.slice(1);
-  }
-  return string;
-}
+var fm = new Parser('---', yaml.safeLoad);
 
-module.exports = dm;
+// default aliases dsfm.yaml
+module.exports = fm;
+
+// expose parser
+module.exports.Parser = Parser;
+
+// expose yaml and json front matter
+module.exports.yaml = fm;
+module.exports.json = new Parser(['{{{', '}}}'], function(data) {
+  JSON.parse('{' + str + '}');
+});
+
+
