@@ -5,7 +5,7 @@ var stream = require('readable-stream');
 var yaml = require('js-yaml');
 
 /**
- * Constructs new front matter parser
+ * Constructs new front-matter parser
  * given delimiter(s) and an optional
  * function to transform the extracted
  * front-matter
@@ -49,7 +49,7 @@ function Parser(delims, fn) {
   _this = function(str) {
 
     var out = {
-      attributes: {},
+      attributes: null,
       body: str
     }
 
@@ -80,10 +80,35 @@ function Parser(delims, fn) {
    * @return {stream.Transform} through stream
    * @api private
    */
-  _this.transform = function() {
+  _this.through = function() {
+    var self = this; // actually _this
+    var data = '';
+    var inBody = false;
+
     return new stream.Transform({
-      transform: null,
-      flush: null
+      transform: function(chunk, encoding, next) {
+        if(!inBody) {
+          data += String(chunk);
+          try {
+            var split = self(data);
+            if(split.attributes) {
+              inBody = !inBody;
+              this.emit('attributes', split.attributes);
+              return next(null, split.body);
+            }
+          } catch(err) {
+            next(err);
+          }
+        } else {
+          next(null, chunk);
+        }
+      },
+      flush: function(done) {
+        if(!inBody) {
+          this.push(data);
+        }
+        done();
+      }
     });
   };
 
@@ -132,6 +157,6 @@ module.exports.Parser = Parser;
 
 // expose yaml and json front matter
 module.exports.yaml = fm;
-module.exports.json = new Parser(['{{{', '}}}'], function(data) {
-  JSON.parse('{' + str + '}');
+module.exports.json = new Parser(['{{{', '}}}'], function(str) {
+  return JSON.parse('{' + str + '}');
 });
