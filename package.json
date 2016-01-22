@@ -1,12 +1,11 @@
 {
   "name": "dsfm",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": "https://github.com/axdg/dark-matter.git",
   "description": "Delimiter Seperated Front-Matter",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec",
-    "coveralls": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
+    "test": "mocha --reporter spec && istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
   "author": "axdg <axdg@dfant.asia>",
   "license": "MIT",
