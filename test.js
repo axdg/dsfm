@@ -82,7 +82,7 @@ describe('dsfm', function() {
     });
     describe('#through()', function() {
       var through = dsfm.yaml.through();
-      it('should return through stream', function() {
+      it('should return `through` stream', function() {
         assert(through instanceof stream.Transform);
       });
       it('that emits `attributes` and `data`', function(complete) {
@@ -145,7 +145,7 @@ describe('dsfm', function() {
     });
     describe('#through()', function() {
       var through = dsfm.json.through();
-      it('should return through stream', function() {
+      it('should return `through` stream', function() {
         assert(through instanceof stream.Transform);
       });
       it('that emits `attributes` and `data`', function(complete) {
@@ -164,8 +164,8 @@ describe('dsfm', function() {
           body += data;
         });
         through.on('end', function(data) {
-          assert(attributes, { testing: true, passing: 'hopefully'});
-          assert(body, 'content');
+          assert.deepEqual(attributes, { testing: true, passing: 'hopefully'});
+          assert.deepEqual(body, 'content');
           complete();
         });
         readable.pipe(through);
@@ -173,10 +173,3 @@ describe('dsfm', function() {
     });
   });
 });
-
-// empty file
-// front-matter and content
-// no front-matter and content
-// front-matter and no content
-// no second delimiter
-// no first delimiter

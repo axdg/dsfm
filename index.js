@@ -85,12 +85,20 @@ function Parser(delims, fn) {
     var data = '';
     var inBody = false;
 
+    // this could still be optimized
+    // for where fron-matter doesn't exist
+    // if no opening delim is encountered
+    // the stream should begin emitting right away
     return new stream.Transform({
       transform: function(chunk, encoding, next) {
         if(!inBody) {
           data += String(chunk);
           try {
             var split = self(data);
+
+
+            // if front matter was captured emit the
+            // attributes event, push whatever remains
             if(split.attributes) {
               inBody = !inBody;
               this.emit('attributes', split.attributes);
@@ -99,11 +107,22 @@ function Parser(delims, fn) {
           } catch(err) {
             next(err);
           }
+
+          // make sure str could actually
+          // contain a front-matter block,
+          // if not, no need to accumulate chunks
+          if(data.length > 6 && !o.test(data)) {
+            inBody = !inBody;
+            next(null, data);
+          }
         } else {
           next(null, chunk);
         }
       },
       flush: function(done) {
+        // worst case scenario; str began with an
+        // opening delim, but the closing delim
+        // does not exist, push all data to buffer
         if(!inBody) {
           this.push(data);
         }

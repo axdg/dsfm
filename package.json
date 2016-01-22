@@ -5,21 +5,19 @@
   "description": "Delimiter Seperated Front-Matter",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require blanket -R mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js"
+    "test": "mocha --reporter spec",
+    "coveralls": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
   "author": "axdg <axdg@dfant.asia>",
   "license": "MIT",
   "devDependencies": {
-    "benchmark": "^1.0.0",
-    "blanket": "^1.1.7",
-    "coveralls": "^2.11.4",
-    "front-matter": "^1.0.0",
-    "gray-matter": "^2.0.1",
-    "mocha-lcov-reporter": "0.0.2",
-    "readable-stream": "^2.0.5"
+    "coveralls": "^2.11.6",
+    "istanbul": "^0.4.2",
+    "mocha-lcov-reporter": "0.0.2"
   },
   "dependencies": {
-    "js-yaml": "^3.5.2"
+    "js-yaml": "^3.5.2",
+    "readable-stream": "^2.0.5"
   },
   "config": {
     "blanket": {
