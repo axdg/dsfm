@@ -15,23 +15,23 @@ var yaml = require('js-yaml');
  * @return {Function} new parser
  */
 function Parser(delims, fn) {
-  if(!this instanceof Parser) {
-    return new Parser(delims, fn)
+  if (!this instanceof Parser) {
+    return new Parser(delims, fn);
   }
 
   // parse fn argument
   fn = fn || noop;
-  if(typeof fn !== 'function') {
+  if (typeof fn !== 'function') {
     throw new TypeError('fn must be a function');
   }
 
   // parse/normalize delims argument
   var arr = Array.isArray(delims);
-  if(!arr && typeof delims !== 'string') {
+  if (!arr && typeof delims !== 'string') {
     throw new TypeError('delims must be a string or array');
-  } else if(!arr) {
+  } else if (!arr) {
     delims = [delims];
-  } else if(!delims.length) {
+  } else if (!delims.length) {
     throw new Error('delims cannot be an empty array');
   }
 
@@ -46,20 +46,19 @@ function Parser(delims, fn) {
    * @param {String} str
    * @return {Boolean} front-matter?
    */
-  _this = function(str) {
-
+  var _this = function (str) {
     var out = {
       attributes: null,
-      body: str
-    }
+      body: str,
+    };
 
-    if(!o.test(str)) {
+    if (!o.test(str)) {
       return out;
     }
 
     var end = str.search(c);
 
-    if(end === -1) {
+    if (end === -1) {
       return out;
     }
 
@@ -69,7 +68,7 @@ function Parser(delims, fn) {
     // slice out the body
     out.body = str.slice(str.indexOf('\n', end + 1) + 1);
     return out;
-  }
+  };
 
   /**
    * Creates a through stream that
@@ -80,7 +79,7 @@ function Parser(delims, fn) {
    * @return {stream.Transform} through stream
    * @api private
    */
-  _this.through = function() {
+  _this.through = function () {
     var self = this; // actually _this
     var data = '';
     var inBody = false;
@@ -90,8 +89,8 @@ function Parser(delims, fn) {
     // if no opening delim is encountered
     // the stream should begin emitting right away
     return new stream.Transform({
-      transform: function(chunk, encoding, next) {
-        if(!inBody) {
+      transform: function (chunk, encoding, next) {
+        if (!inBody) {
           data += String(chunk);
           try {
             var split = self(data);
@@ -99,19 +98,19 @@ function Parser(delims, fn) {
 
             // if front matter was captured emit the
             // attributes event, push whatever remains
-            if(split.attributes) {
+            if (split.attributes) {
               inBody = !inBody;
               this.emit('attributes', split.attributes);
               return next(null, split.body);
             }
-          } catch(err) {
+          } catch (err) {
             next(err);
           }
 
           // make sure str could actually
           // contain a front-matter block,
           // if not, no need to accumulate chunks
-          if(data.length > 6 && !o.test(data)) {
+          if (data.length > 6 && !o.test(data)) {
             inBody = !inBody;
             next(null, data);
           }
@@ -119,15 +118,16 @@ function Parser(delims, fn) {
           next(null, chunk);
         }
       },
-      flush: function(done) {
+      flush: function (done) {
         // worst case scenario; str began with an
         // opening delim, but the closing delim
         // does not exist, push all data to buffer
-        if(!inBody) {
+        if (!inBody) {
+          this.emit('attributes', null);
           this.push(data);
         }
         done();
-      }
+      },
     });
   };
 
@@ -138,9 +138,9 @@ function Parser(delims, fn) {
    * @param {String} str
    * @return {Boolean} front-matter?
    */
-  _this.test = function(str) {
+  _this.test = function (str) {
     return o.test(str) && c.test(str);
-  }
+  };
 
   return _this;
 }
@@ -152,7 +152,7 @@ function Parser(delims, fn) {
  * @return {String} RegExp escaped string
  */
 function escape(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 /**
@@ -176,6 +176,6 @@ module.exports.Parser = Parser;
 
 // expose yaml and json front matter
 module.exports.yaml = fm;
-module.exports.json = new Parser(['{{{', '}}}'], function(str) {
+module.exports.json = new Parser(['{{{', '}}}'], function (str) {
   return JSON.parse('{' + str + '}');
 });

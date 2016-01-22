@@ -5,12 +5,16 @@
   "description": "Delimiter Seperated Front-Matter",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec && istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
+    "test": "./node_modules/eslint/bin/eslint.js *.js && mocha --reporter spec",
+    "coveralls": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
   "author": "axdg <axdg@dfant.asia>",
   "license": "MIT",
   "devDependencies": {
+    "babel-eslint": "^4.1.6",
     "coveralls": "^2.11.6",
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^3.1.0",
     "istanbul": "^0.4.2",
     "mocha-lcov-reporter": "^1.0.0"
   },
