@@ -1,6 +1,8 @@
-# dark-matter
+# dsfm
 
-[![Build Status](https://travis-ci.org/axdg/dark-matter.svg?branch=master)](https://travis-ci.org/axdg/dark-matter)
-[![Coverage Status](https://coveralls.io/repos/axdg/dark-matter/badge.svg?branch=master&service=github)](https://coveralls.io/github/axdg/dark-matter?branch=master)
+> Parses documents containing Delimiter-Separated Front-Matter 
 
-> front-matter and post parsing
+[![Build Status](https://travis-ci.org/axdg/dsfm.svg?branch=master)](https://travis-ci.org/axdg/dsfm)
+[![Coverage Status](https://coveralls.io/repos/github/axdg/dsfm/badge.svg?branch=master)](https://coveralls.io/github/axdg/dsfm?branch=master)
+
+
