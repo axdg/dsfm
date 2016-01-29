@@ -16,19 +16,11 @@
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^3.1.0",
     "istanbul": "^0.4.2",
-    "mocha-lcov-reporter": "^1.0.0"
+    "mocha-lcov-reporter": "^1.0.0",
+    "tape": "^4.4.0"
   },
   "dependencies": {
     "js-yaml": "^3.5.2",
     "readable-stream": "^2.0.5"
-  },
-  "config": {
-    "blanket": {
-      "pattern": "index.js",
-      "data-cover-never": [
-        "node_modules",
-        "test.js"
-      ]
-    }
   }
 }
