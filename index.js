@@ -14,18 +14,12 @@ var yaml = require('js-yaml');
  * @param {Function} [fn]
  * @return {Function} new parser
  */
-function Parser(delims, fn) {
-  if (!this instanceof Parser) {
-    return new Parser(delims, fn);
-  }
-
-  // parse fn argument
+function parser(delims, fn) {
   fn = fn || noop;
   if (typeof fn !== 'function') {
     throw new TypeError('fn must be a function');
   }
 
-  // parse/normalize delims argument
   var arr = Array.isArray(delims);
   if (!arr && typeof delims !== 'string') {
     throw new TypeError('delims must be a string or array');
@@ -36,8 +30,8 @@ function Parser(delims, fn) {
   }
 
   // compile opening `o` and closing `c` RegExps
-  var o = new RegExp('^\\uFEFF?' + escape(delims[0]) + '\\r?\\n');
-  var c = new RegExp('\\n' + escape(delims[1] || delims[0]) + '\\r?\\n');
+  var o = new RegExp('^\uFEFF?' + escape(delims[0]) + '\r?\n');
+  var c = new RegExp('\n' + escape(delims[1] || delims[0]) + '(?:\r?\n|$)');
 
   /**
    * Test a string to determine
@@ -62,8 +56,15 @@ function Parser(delims, fn) {
       return out;
     }
 
-    // slice out and parse the front matter
+    // slice out and parse the front-matter
     out.attributes = fn(str.slice(str.indexOf('\n') + 1, end));
+
+    // check if the body actually exists
+    var index = (str.indexOf('\n', end + 1) + 1);
+    if (!index) {
+      out.body = '';
+      return out;
+    }
 
     // slice out the body
     out.body = str.slice(str.indexOf('\n', end + 1) + 1);
@@ -166,16 +167,11 @@ function noop(str) {
   return str;
 }
 
-var fm = new Parser('---', yaml.safeLoad);
-
-// default aliases dsfm.yaml()
-module.exports = fm;
-
-// expose parser
-module.exports.Parser = Parser;
+// parser is the default export
+module.exports = parser;
 
 // expose yaml and json front matter
-module.exports.yaml = fm;
-module.exports.json = new Parser(['{{{', '}}}'], function (str) {
+module.exports.yaml = parser('---', yaml.safeLoad);
+module.exports.json = parser(['{{{', '}}}'], function (str) {
   return JSON.parse('{' + str + '}');
 });

@@ -2,40 +2,37 @@ var dsfm = require('./');
 var assert = require('assert');
 var stream = require('readable-stream');
 
-describe('dsfm', function () {
-  describe('#Parser()', function () {
-    it('should return a Function instance,', function () {
-      assert(new dsfm.Parser('') instanceof Function);
+describe('dsfm()', function () {
+  it('should return a Function instance,', function () {
+    assert(dsfm('') instanceof Function);
+  });
+  it('should deal with arbitrary delims,', function () {
+    var csfm = new dsfm(',,,', function (data) {
+      return data.replace('dash', 'comma');
     });
-    it('even when invoked without `new`,', function () {
-      assert(dsfm.Parser('') instanceof Function);
+    var ret = csfm(',,,\ndash-seperated\n,,,\ncontent');
+    assert.equal(ret.attributes, 'comma-seperated');
+    assert.equal(ret.body, 'content');
+
+    // no newline after closing delim (eos)
+    var bsfm = dsfm(['[[[', ']]]'], function (data) {
+      return data.replace('dash', 'square-bracket');
     });
-    it('should deal with arbitrary delims,', function () {
-      var csfm = new dsfm.Parser(',,,', function (data) {
-        return data.replace('dash', 'comma');
-      });
-      var ret = csfm(',,,\ndash-seperated\n,,,\ncontent');
-      assert.equal(ret.attributes, 'comma-seperated');
-      assert.equal(ret.body, 'content');
-      var bsfm = new dsfm.Parser(['[[[', ']]]'], function (data) {
-        return data.replace('dash', 'square-bracket');
-      });
-      ret = bsfm('[[[\ndash-seperated\n]]]\ncontent');
-      assert.equal(ret.attributes, 'square-bracket-seperated');
-      assert.equal(ret.body, 'content');
-    });
-    it('even when constructed without a transform', function () {
-      var csfm = new dsfm.Parser(',,,', null);
-      var ret = csfm(',,,\ndata\n,,,\ncontent');
-      assert.equal(ret.attributes, 'data');
-      assert.equal(ret.body, 'content');
-    });
-    it('should throw on invalid delims type', function () {
-      assert.throws(function () { new dsfm.Parser({}); });
-    });
-    it('should throw on invalid fn type', function () {
-      assert.throws(function () { new dsfm.Parser('', 2); });
-    });
+    ret = bsfm('[[[\ndash-seperated\n]]]');
+    assert.equal(ret.attributes, 'square-bracket-seperated');
+    assert.equal(ret.body, '');
+  });
+  it('even when constructed without a transform', function () {
+    var csfm = new dsfm(',,,', null);
+    var ret = csfm(',,,\ndata\n,,,\ncontent');
+    assert.equal(ret.attributes, 'data');
+    assert.equal(ret.body, 'content');
+  });
+  it('should throw on invalid delims type', function () {
+    assert.throws(function () { new dsfm.Parser({}); });
+  });
+  it('should throw on invalid fn type', function () {
+    assert.throws(function () { new dsfm.Parser('', 2); });
   });
 
   /**
@@ -46,8 +43,6 @@ describe('dsfm', function () {
   describe('#yaml()', function () {
     it('should correctly parse a document', function () {
       var post = dsfm.yaml('---\ntesting: true\npassing: hopefully\n---\ncontent');
-      var alias = dsfm('---\ntesting: true\npassing: hopefully\n---\ncontent');
-      assert.deepEqual(post, alias);
       assert.deepEqual(post.attributes, { testing: true, passing: 'hopefully' });
       assert.equal(post.body, 'content');
     });
