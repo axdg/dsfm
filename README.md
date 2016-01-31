@@ -32,7 +32,7 @@ var post = jsonfm('{{{\ntitle: abc\n}}}\npost');
 
 This can also generate custom document parsers, and parse streams of text (see below).
 
-**Note:** So far as I know, there is no specification for front-matter (yaml or otherwise). This modules `spec` defines front-matter as a block of text at the beginning of a string seperated by two delimiters, each on their own line. The opening delimiter must be the first thing in the string. The closing delimiter must be immediately followed by a newline character (or the end of the string).
+**Note:** So far as I know, there is no specification for front-matter (yaml or otherwise). This modules 'spec' defines front-matter as a block of text at the beginning of a string seperated by two delimiters, each on their own line. The opening delimiter must be the first thing in the string. The closing delimiter must be immediately followed by a newline character (or the end of the string).
 
 ## API
 
@@ -89,9 +89,19 @@ If no front-matter is present, the attributes payload will be `null`.
 
 ### dsfm.yaml()
 
+A parser for strings containing yaml front-matter, delimited by '---' and '---'. Generated internally using `dsfm('---', yaml.safeLoad)`. It also implements the `test(doc)` and `through()` methods.
+
 ### dsfm.json()
 
-A parser for strings containing json front-matter (also implements the `test(doc)` and `through()` methods).
+A parser for strings containing json front-matter, delimited by '{{{' and '}}}'. Generated internally using:
+
+```js
+parser(['{{{', '}}}'], function (str) {
+  return JSON.parse('{' + str + '}');
+});
+```
+
+It also implements the `test(doc)` and `through()` methods.
 
 **Note:** json front-matter is a set of object key-value pairs. Values may themselves be objects or arrays nested however deeply, but at the top level, it must be an object (not an array).
 
