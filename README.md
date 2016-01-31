@@ -87,16 +87,16 @@ post.on('attributes', function(attr) {
 
 If no front-matter is present, the attributes payload will be `null`.
 
-### dsfm.yaml()
+### dsfm.yaml
 
 A parser for strings containing yaml front-matter, delimited by '---' and '---'. Generated internally using `dsfm('---', yaml.safeLoad)`. It also implements the `test(doc)` and `through()` methods.
 
-### dsfm.json()
+### dsfm.json
 
 A parser for strings containing json front-matter, delimited by '{{{' and '}}}'. Generated internally using:
 
 ```js
-parser(['{{{', '}}}'], function (str) {
+dsfm(['{{{', '}}}'], function (str) {
   return JSON.parse('{' + str + '}');
 });
 ```
