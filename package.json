@@ -1,6 +1,6 @@
 {
   "name": "dsfm",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": "https://github.com/axdg/dark-matter.git",
   "description": "Delimiter Seperated Front-Matter",
   "main": "index.js",
