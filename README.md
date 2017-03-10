@@ -65,6 +65,8 @@ If no front-matter is present, arrtibutes will be `null` and `body` body will co
 
 ### *parser*.test(doc)
 
+#### doc
+
 Type: `string`
 
 Test for the presence of front-matter in `doc`
