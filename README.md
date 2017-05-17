@@ -1,8 +1,8 @@
 # dsfm
 
-> Parse documents containing Delimiter-Separated Front-Matter 
+> Parse documents containing delimiter-separated front-matter 
 
-[![Build Status](https://travis-ci.org/axdg/dsfm.svg?branch=master)](https://travis-ci.org/axdg/dsfm) [![Coverage Status](https://coveralls.io/repos/github/axdg/dsfm/badge.svg?branch=master)](https://coveralls.io/github/axdg/dsfm?branch=master)
+[![Build Status](https://travis-ci.org/axdg/dsfm.svg?branch=master)](https://travis-ci.org/axdg/dsfm) [![CircleCI](https://circleci.com/gh/axdg/dsfm.svg?style=shield)](https://circleci.com/gh/axdg/dsfm) [![Coverage Status](https://coveralls.io/repos/github/axdg/dsfm/badge.svg?branch=master)](https://coveralls.io/github/axdg/dsfm?branch=master)
 
 ## Install
 
