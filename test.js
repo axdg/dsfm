@@ -2,7 +2,7 @@ const parser = require('./');
 const assert = require('assert');
 const stream = require('readable-stream');
 
-describe('parser()', function () {
+describe('parser', function () {
   it('should return a Function instance,', function () {
     assert(parser('') instanceof Function);
   });
@@ -47,7 +47,7 @@ describe('parser()', function () {
    * test for return values of the parser
    * constructor, given arbitrary args.
    */
-  describe('#yaml()', function () {
+  describe('yaml', function () {
     it('should correctly parse a document', function () {
       const post = parser.yaml('---\ntesting: true\npassing: hopefully\n---\ncontent');
       assert.deepEqual(post.attributes, { testing: true, passing: 'hopefully' });
@@ -78,7 +78,7 @@ describe('parser()', function () {
       assert.equal(post.body, '');
     });
 
-    describe('#test()', function () {
+    describe('test', function () {
       it('should test for yaml front-matter in a document', function () {
         const test = parser.yaml.test;
         assert(test('---\ntesting: true\npassing: hopefully\n---\ncontent'));
@@ -86,7 +86,7 @@ describe('parser()', function () {
       });
     });
 
-    describe('#through()', function () {
+    describe('through', function () {
       const through = parser.yaml.through();
       it('should return `through` stream', function () {
         assert(through instanceof stream.Transform);
@@ -122,7 +122,7 @@ describe('parser()', function () {
     });
   });
 
-  describe('#json()', function () {
+  describe('json', function () {
     it('should correctly parse a document', function () {
       const post = parser.json('{{{\n"testing":true,"passing":"hopefully"\n}}}\ncontent');
       assert.deepEqual(post.attributes, { testing: true, passing: 'hopefully' });
@@ -153,7 +153,7 @@ describe('parser()', function () {
       assert.equal(post.body, '');
     });
 
-    describe('#test()', function () {
+    describe('test', function () {
       it('should test for json front-matter in a document', function () {
         const test = parser.json.test;
         assert(test('{{{\n"testing":true,"passing":"hopefully"\n}}}\ncontent'));
@@ -161,7 +161,7 @@ describe('parser()', function () {
       });
     });
 
-    describe('#through()', function () {
+    describe('through', function () {
       const through = parser.json.through();
       it('should return `through` stream', function () {
         assert(through instanceof stream.Transform);
