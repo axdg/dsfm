@@ -1,8 +1,8 @@
 # dsfm
 
-> Parse documents containing Delimiter-Separated Front-Matter 
+> Parse documents containing delimiter-separated front-matter 
 
-[![Build Status](https://travis-ci.org/axdg/dsfm.svg?branch=master)](https://travis-ci.org/axdg/dsfm) [![Coverage Status](https://coveralls.io/repos/github/axdg/dsfm/badge.svg?branch=master)](https://coveralls.io/github/axdg/dsfm?branch=master)
+[![Build Status](https://travis-ci.org/axdg/dsfm.svg?branch=master)](https://travis-ci.org/axdg/dsfm) [![CircleCI](https://circleci.com/gh/axdg/dsfm.svg?style=shield)](https://circleci.com/gh/axdg/dsfm) [![Coverage Status](https://coveralls.io/repos/github/axdg/dsfm/badge.svg?branch=master)](https://coveralls.io/github/axdg/dsfm?branch=master)
 
 ## Install
 
@@ -15,18 +15,18 @@ $ npm install --save dsfm
 The simplest use case is to parse documents containing yaml front-matter:
 
 ```js
-var yamlfm = require('dsfm').yaml;
+const parser = require('dsfm').yaml;
 
-var post = yamlfm('---\ntitle: abc\n---\npost');
+var post = parser('---\ntitle: abc\n---\npost');
 // => {attributes: {title: 'abc'}, body: 'post'}
 ```
 
 or json front-matter:
 
 ```js
-var jsonfm = require('dsfm').json;
+const parser = require('dsfm').json;
 
-var post = jsonfm('{{{\ntitle: abc\n}}}\npost');
+const post = jsonfm('{{{\ntitle: abc\n}}}\npost');
 // => {attributes: {title: 'abc'}, body: 'post'}
 ```
 
@@ -109,6 +109,6 @@ It also implements the `test(doc)` and `through()` methods.
 
 ## License
 
-MIT (c) 2016, axdg (<axdg@dfant.asia>).
+MIT &copy; 2016-2107, axdg (<axdg@dfant.asia>)
 
 
