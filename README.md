@@ -15,18 +15,18 @@ $ npm install --save dsfm
 The simplest use case is to parse documents containing yaml front-matter:
 
 ```js
-var yamlfm = require('dsfm').yaml;
+const parser = require('dsfm').yaml;
 
-var post = yamlfm('---\ntitle: abc\n---\npost');
+var post = parser('---\ntitle: abc\n---\npost');
 // => {attributes: {title: 'abc'}, body: 'post'}
 ```
 
 or json front-matter:
 
 ```js
-var jsonfm = require('dsfm').json;
+const parser = require('dsfm').json;
 
-var post = jsonfm('{{{\ntitle: abc\n}}}\npost');
+const post = jsonfm('{{{\ntitle: abc\n}}}\npost');
 // => {attributes: {title: 'abc'}, body: 'post'}
 ```
 
@@ -109,6 +109,6 @@ It also implements the `test(doc)` and `through()` methods.
 
 ## License
 
-MIT (c) 2016, axdg (<axdg@dfant.asia>).
+MIT (&copy;) 2016-2107, axdg (<axdg@dfant.asia>)
 
 
