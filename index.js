@@ -1,8 +1,8 @@
 /**
- * Module dependancies
+ * Module dependancies.
  */
-var stream = require('readable-stream');
-var yaml = require('js-yaml');
+const stream = require('readable-stream');
+const yaml = require('js-yaml');
 
 /**
  * Constructs new front-matter parser
@@ -14,59 +14,52 @@ var yaml = require('js-yaml');
  * @param {Function} [fn]
  * @return {Function} new parser
  */
-function parser(delims, fn) {
-  fn = fn || noop;
-  if (typeof fn !== 'function') {
-    throw new TypeError('fn must be a function');
+function parser(d, fn = noop) {
+  if (typeof fn !== 'function') throw new TypeError('fn must be a function');
+
+  const isArray = Array.isArray(d);
+  if (!isArray && typeof d !== 'string') {
+    throw new TypeError('first argument must be a string or array');
+  } else if (!isArray) {
+    d = [d];
+  } else if (!d.length) {
+    throw new Error('first argument cannot be an empty array');
   }
 
-  var arr = Array.isArray(delims);
-  if (!arr && typeof delims !== 'string') {
-    throw new TypeError('delims must be a string or array');
-  } else if (!arr) {
-    delims = [delims];
-  } else if (!delims.length) {
-    throw new Error('delims cannot be an empty array');
-  }
-
-  // compile opening `o` and closing `c` RegExps
-  var o = new RegExp('^\uFEFF?' + escape(delims[0]) + '\r?\n');
-  var c = new RegExp('\n' + escape(delims[1] || delims[0]) + '(?:\r?\n|$)');
+  // Compile opening (`o`) and closing (`c`) RegExps.
+  const o = new RegExp('^\uFEFF?' + escape(delims[0]) + '\r?\n');
+  const c = new RegExp('\n' + escape(delims[1] || delims[0]) + '(?:\r?\n|$)');
 
   /**
    * Test a string to determine
-   * if it contains front-matter
+   * if it contains front-matter.
    *
-   * @param {String} str
-   * @return {Boolean} front-matter?
+   * @param {String}
+   * @return {Boolean}
    */
-  var _this = function (str) {
-    var out = {
+  const _this = function (str = '') {
+    const out = {
       attributes: null,
       body: str,
     };
 
-    if (!o.test(str)) {
-      return out;
-    }
+    if (!o.test(str)) return out;
 
-    var end = str.search(c);
+    const end = str.search(c);
 
-    if (end === -1) {
-      return out;
-    }
+    if (end === -1) return out;
 
-    // slice out and parse the front-matter
+    // Slice out and parse the front-matter.
     out.attributes = fn(str.slice(str.indexOf('\n') + 1, end));
 
-    // check if the body actually exists
-    var index = (str.indexOf('\n', end + 1) + 1);
+    // Check if the body actually exists.
+    const index = (str.indexOf('\n', end + 1) + 1);
     if (!index) {
       out.body = '';
       return out;
     }
 
-    // slice out the body
+    // Slice out the body.
     out.body = str.slice(str.indexOf('\n', end + 1) + 1);
     return out;
   };
@@ -81,26 +74,30 @@ function parser(delims, fn) {
    * @api private
    */
   _this.through = function () {
-    var self = this; // actually _this
-    var data = '';
-    var inBody = false;
+    const self = this; // Actually `_this` :)
 
-    // this could still be optimized
-    // for where fron-matter doesn't exist
-    // if no opening delim is encountered
-    // the stream should begin emitting right away
+    let data = '';
+    let inDocumentBody = false;
+
+    /**
+     * NOTE: This could still be optimized
+     * for where fron-matter doesn't exist
+     * if no opening delim is encountered
+     * the stream should begin emitting right away.
+     */
     return new stream.Transform({
       transform: function (chunk, encoding, next) {
-        if (!inBody) {
+        if (!inDocumentBody) {
           data += String(chunk);
           try {
-            var split = self(data);
+            const split = self(data);
 
-
-            // if front matter was captured emit the
-            // attributes event, push whatever remains
+           /**
+            * If front matter was captured emit the
+            * attributes event, push whatever remains.
+            */
             if (split.attributes) {
-              inBody = !inBody;
+              inDocumentBody = !inDocumentBody;
               this.emit('attributes', split.attributes);
               return next(null, split.body);
             }
@@ -108,11 +105,13 @@ function parser(delims, fn) {
             next(err);
           }
 
-          // make sure str could actually
-          // contain a front-matter block,
-          // if not, no need to accumulate chunks
+          /**
+           * make sure `str` could actually
+           * contain a front-matter block,
+           * if not, no need to accumulate chunks.
+           */
           if (data.length > 6 && !o.test(data)) {
-            inBody = !inBody;
+            inDocumentBody = !inDocumentBody;
             next(null, data);
           }
         } else {
@@ -120,10 +119,12 @@ function parser(delims, fn) {
         }
       },
       flush: function (done) {
-        // worst case scenario; str began with an
-        // opening delim, but the closing delim
-        // does not exist, push all data to buffer
-        if (!inBody) {
+        /**
+         * worst case scenario; `str` began with an
+         * opening delim, but the closing delim
+         * does not exist, push all data to buffer
+         */
+        if (!inDocumentBody) {
           this.emit('attributes', null);
           this.push(data);
         }
@@ -147,7 +148,7 @@ function parser(delims, fn) {
 }
 
 /**
- * Escape user supplied delimiter
+ * Escape user supplied delimiter.
  *
  * @param {String} str
  * @return {String} RegExp escaped string
@@ -167,7 +168,7 @@ function noop(str) {
   return str;
 }
 
-// parser is the default export
+// The parser is the default export.
 module.exports = parser;
 
 // expose yaml and json front matter

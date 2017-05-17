@@ -5,8 +5,9 @@
   "description": "Delimiter Seperated Front-Matter",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint index.js test.js",
     "test": "./node_modules/eslint/bin/eslint.js *.js && mocha --reporter spec",
-    "coveralls": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
+    "test:coverage": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
   "author": "axdg <axdg@dfant.asia>",
   "license": "MIT",
