@@ -109,6 +109,6 @@ It also implements the `test(doc)` and `through()` methods.
 
 ## License
 
-MIT (&copy;) 2016-2107, axdg (<axdg@dfant.asia>)
+MIT &copy; 2016-2107, axdg (<axdg@dfant.asia>)
 
 
