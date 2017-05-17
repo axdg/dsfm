@@ -10,7 +10,7 @@ const yaml = require('js-yaml');
  * function to transform the extracted
  * front-matter
  *
- * @param {String|Array} delims
+ * @param {String|Array} d
  * @param {Function} [fn]
  * @return {Function} new parser
  */
@@ -27,8 +27,8 @@ function parser(d, fn = noop) {
   }
 
   // Compile opening (`o`) and closing (`c`) RegExps.
-  const o = new RegExp('^\uFEFF?' + escape(delims[0]) + '\r?\n');
-  const c = new RegExp('\n' + escape(delims[1] || delims[0]) + '(?:\r?\n|$)');
+  const o = new RegExp('^\uFEFF?' + escape(d[0]) + '\r?\n');
+  const c = new RegExp('\n' + escape(d[1] || d[0]) + '(?:\r?\n|$)');
 
   /**
    * Test a string to determine

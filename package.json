@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint index.js test.js",
-    "test": "./node_modules/eslint/bin/eslint.js *.js && mocha --reporter spec",
+    "test:node": "mocha --reporter spec",
     "test:coverage": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
   "author": "axdg <axdg@dfant.asia>",
@@ -17,6 +17,7 @@
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^3.1.0",
     "istanbul": "^0.4.2",
+    "mocha": "^3.4.1",
     "mocha-lcov-reporter": "^1.0.0",
     "tape": "^4.4.0"
   },
